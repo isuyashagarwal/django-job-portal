@@ -64,7 +64,10 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-12 form-group">
-                                <label for="description">Job Description</label>
+                                <div>
+                                    <label for="description mb-2">Job Description</label>
+                                    <button class="btn btn-primary btn-sm mb-2" style="border-radius: 5px;" data-toggle="modal" data-target="#exampleModal" type="button">Generate with AI</button>
+                                </div>
                                 <textarea id="description" name="description" rows="5"
                                           style="height: 200px"
                                           class="form-control">{{ form.description.value|default_if_none:"" }}</textarea>
@@ -194,23 +197,80 @@
             </div>
         </div>
     </section>
-
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Generate Job Description</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Briefly describe the job profile</label>
+                    <textarea class="form-control" id="briefJd" rows="3"></textarea>
+                </div>                
+                <button onclick="insertDesc();" class="btn btn-primary btn-sm w-100" type="button">
+                    <img src="https://media.tenor.com/On7kvXhzml4AAAAj/loading-gif.gif" style="height: 25px;display: none;" id="genJdSpinner">
+                    <span id="genJdText">Generate</span>
+                </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
 {% endblock %}
 
 {% block javascripts %}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.2.0/tinymce.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.full.js"></script>
-
     <script>
         $(document).ready(function () {
             $('.js-select2').select2();
 
             tinymce.init({
-                selector: 'textarea',
+                selector: 'textarea#description',
                 toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | outdent indent'
             });
         });
+        
+    </script>
+    <script type="text/javascript">
+        function insertDesc(){
+            event.preventDefault();
+            genJdSpinner = document.getElementById('genJdSpinner');
+            genJdText = document.getElementById('genJdText');
+            genJdSpinner.style.display = "";
+            genJdText.style.display = "none";
+            jobTitle = document.getElementById("title").value;
+            brief = document.getElementById("briefJd").value;
+
+            $.ajax({
+                url: '/en/gen-jd/',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    title: jobTitle,
+                    brief: brief,
+                }),
+                success: function(response) {
+                    genJdSpinner.style.display = "none";
+                    genJdText.style.display = "";
+                    status = response['status'];
+                    if(status == "success"){
+                        tinymce.get('description').setContent(response['message']);
+                    } else{
+                        alert(response['message']);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+        }
     </script>
 
 {% endblock %}

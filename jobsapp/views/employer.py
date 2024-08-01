@@ -1,17 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse, JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-
+from django.conf import settings
+import json
 from accounts.forms import EmployerProfileUpdateForm
 from jobsapp.decorators import user_is_employer
 from jobsapp.forms import CreateJobForm
 from jobsapp.models import Applicant, Job
 from tags.models import Tag
 
+from groq import Groq
+
+ai_client = Groq(
+    api_key=settings.GROQ_SECRET,
+)
 
 class DashboardView(ListView):
     model = Job
@@ -234,3 +241,53 @@ class EmployerProfileEditView(UpdateView):
         if obj is None:
             raise Http404("Job doesn't exists")
         return obj
+
+# @login_required(login_url=reverse_lazy("accounts:login"))
+# @user_is_employer
+@csrf_exempt
+def generate_jd(request):
+    if request.method == "POST":
+        data = request.body
+        if data:
+            try:
+                json_data = json.loads(data)
+                jobTitle = json_data.get('title', None)
+                brief = json_data.get('brief', None)
+                if jobTitle and brief:
+                    chat_completion = ai_client.chat.completions.create(
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": "Return the output in html format. Do the task only, do not act like assistant.",
+                            },
+                            {
+                                "role": "user",
+                                "content": f"Write a job description the job title {jobTitle}, {brief}.",
+                            }
+                        ],
+                        model="llama3-8b-8192",
+                    )
+
+                    data = chat_completion.choices[0].message.content
+                    response_data = {
+                        'status': 'success',
+                        'message': data
+                    }
+                else:
+                    response_data = {
+                        'status': 'error',
+                        'message': "Provide more information on job title and brief."
+                    }
+
+            except json.JSONDecodeError:
+                response_data = {
+                    'status': 'error',
+                    'message': 'Invalid JSON data'
+                }
+        else:
+            response_data = {
+                'status': 'error',
+                'message': 'No data provided'
+            }
+
+        return JsonResponse(response_data)

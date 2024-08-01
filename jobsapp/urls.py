@@ -8,6 +8,7 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("favorite/", favorite, name="favorite"),
     path("search/", SearchView.as_view(), name="search"),
+    path('gen-jd/', generate_jd, name="Generate JD"),
     path(
         "employer/dashboard/",
         include(

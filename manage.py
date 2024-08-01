@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 import os
 import sys
+import django
+from django.core.handlers.wsgi import WSGIHandler
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'jobs.settings')
+django.setup()
+application = WSGIHandler()
+
+# def lambda_handler(event, context):
+#     from mangum import Mangum
+#     handler = Mangum(application)
+#     return handler(event, context)
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jobs.settings")

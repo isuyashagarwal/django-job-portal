@@ -14,7 +14,9 @@ env = environ.Env()
 
 SECRET_KEY = "@pzqp#x^+#(olu#wy(6=mi9&a8n+g&x#af#apn07@j=5oin=xb"
 
-DEBUG = env("DEBUG", default=False)
+GROQ_SECRET = "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"
+
+DEBUG = env("DEBUG", default=True)
 print("DEBUG: ", DEBUG)
 
 # DEBUG = True
@@ -160,7 +162,7 @@ CORS_ALLOW_HEADERS = (
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # for production
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")

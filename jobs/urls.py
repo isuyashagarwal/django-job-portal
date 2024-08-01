@@ -11,7 +11,6 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from django.views.decorators.csrf import csrf_exempt
 from graphene_file_upload.django import FileUploadGraphQLView
-
 from jobs.sitemaps import Sitemaps, StaticViewSitemap
 from resume_cv.views import load_builder, update_builder
 

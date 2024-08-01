@@ -1,0 +1,35 @@
+FROM public.ecr.aws/lambda/python:3.8
+
+RUN yum install -y gcc libffi-devel python3-devel
+
+WORKDIR /usr/src/app
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+COPY requirements.txt /usr/src/app
+
+RUN python -m pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+COPY . /usr/src/app
+
+RUN cp .env.dev.sample .env
+
+#EXPOSE 8000
+
+RUN chmod +x entrypoint.sh
+
+ENV APP_HOME=/usr/src/app
+ENV DEBUG=1
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+
+# Set the entrypoint script
+# ENTRYPOINT ["python", "manage.py"]
+ENV AWS_ACCESS_KEY_ID=your_access_key_id
+ENV AWS_SECRET_ACCESS_KEY=your_secret_access_key
+ENV AWS_DEFAULT_REGION=your_default_region
+
+# Command to run your application using the Mangum adapter
+CMD ["manage.lambda_handler"]
