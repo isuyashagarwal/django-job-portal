@@ -4,9 +4,26 @@
 
 # Django Job Portal
 
-</div>
+## Updated Documentation
 
-## Django Job Portal
+</div>
+A copy from the original [Django-Job Portal](https://github.com/manjurulhoque/django-job-portal)
+
+Integrated [Groq](https://groq.com/) API to generate job descriptions with AI.
+
+<img src="screenshots/genai.png" height="800">
+
+#### Install
+
+1. Clone this repository
+
+2. To run it locally, type:
+
+   `docker compose up`
+
+3. There are 2 files, Dockerfile and Dockerfile.lambda. To deploy on aws lambda, change "dockerfile" in docker-compose.yml from Dockerfile to Dockerfile.lambda and build a docker image.
+
+## Original Documentation
 
 #### An open source online job portal.
 
@@ -27,48 +44,55 @@ Used Tech Stack
 ### Screenshots
 
 ## Home page
+
 <img src="screenshots/one.png" height="800">
 
 ## Resume template page
+
 <img src="screenshots/six.png" height="800">
 <img src="screenshots/seven.png" height="800">
 
 ## Login page
+
 <img src="screenshots/five.png" height="800">
 
 ## Add new position as employer
+
 <img src="screenshots/two.png" height="800">
 
 ## Job details
+
 <img src="screenshots/three.png" height="800">
 
 ## Swagger API
+
 <img src="screenshots/four.png" height="800">
 
 <a name="local-venv"></a>
+
 ### Local environment
 
 #### Install
 
 1. Create a virtual environment
 
-    `virtualenv venv`
+   `virtualenv venv`
 
-    Or
+   Or
 
-    `python3.8 -m venv venv`
+   `python3.8 -m venv venv`
 
 2. Activate it
 
-    `source venv/bin/activate`
+   `source venv/bin/activate`
 
 3. Clone the repository and install the packages in the virtual env:
 
-    `pip install -r requirements.txt`
+   `pip install -r requirements.txt`
 
 4. Add `.env` file.
 
-    `cp .env.dev.sample .env`
+   `cp .env.dev.sample .env`
 
 5. Add Github client ID and client secret in the `.env` file
 
@@ -78,30 +102,31 @@ Used Tech Stack
 
     python manage.py collectstatic
 
-*Note* : Collect static is not necessary when debug is True (in dev mode)
+_Note_ : Collect static is not necessary when debug is True (in dev mode)
 
 2. Create initial database:
 
-    `python manage.py migrate`
-
+   `python manage.py migrate`
 
 3. Load demo data (optional):
 
-    `python manage.py loaddata fixtures/app_name_initial_data.json --app app.model_name`
+   `python manage.py loaddata fixtures/app_name_initial_data.json --app app.model_name`
 
 4. Run server:
 
-    `python manage.py runserver`
+   `python manage.py runserver`
 
 5. Default django admin credentials:
 
-    `email: admin@admin.com`
-    `password: admin`
+   `email: admin@admin.com`
+   `password: admin`
 
 #### Run test:
-``python manage.py test``
+
+`python manage.py test`
 
 #### To dump data:
-``python manage.py dumpdata --format=json --indent 4 app_name > app_name/fixtures/app_name_initial_data.json``
+
+`python manage.py dumpdata --format=json --indent 4 app_name > app_name/fixtures/app_name_initial_data.json`
 
 Show your support by 🌟 the project!!
